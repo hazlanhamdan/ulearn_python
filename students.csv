@@ -1,4 +1,4 @@
-studentname,studentage
-student1,10
-student2
-student3,15
+studentname,studentage,studentheight
+student1,10,140
+student2,,150
+student3,15,155

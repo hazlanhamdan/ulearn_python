@@ -24,39 +24,60 @@ def make_student(s, header):
     parts = s.split(',')
 
     try:
-        return {
-            headers[0]: parts[0],
-            headers[1]: parts[1],
-        }
+        studentname = parts[0] or None
     except IndexError:
-        return None
+        studentname = None
 
+    try:
+        studentage = parts[1] or None
+    except IndexError:
+        studentage = None
 
-def average_age(students):
-    """
-    [{'studentname': 'student1', 'studentage': '10'}, None, {'studentname': 'student3', 'studentage': '15'}]
-    """
+    try:
+        studentheight = parts[2] or None
+    except IndexError:
+        studentheight = None
 
-    total = 0
-    sum_age = 0.0
+    return {
+        headers[0]: studentname,
+        headers[1]: studentage,
+        headers[2]: studentheight,
+    }
 
-    for student in students:
-        if not student: continue
-        sum_age = sum_age + int(student['studentage'])
-        total = total + 1
+def mean(numbers):
+    return sum(numbers) * 1.0 / len(numbers)
 
-    return sum_age / total
+def apply(li, funcname, rmnone=False):
+    return funcname(filter(lambda x: x is not None, li))
 
+def normalize(li, funcname):
+    temp = []
+
+    for el in li:
+        try:
+            temp.append(funcname(el))
+        except:
+            temp.append(el)
+
+    return temp
+
+def extract(data, field):
+    return [element[field] for element in data]
 
 def main():
+    """
+    1. fix make_student function so that it works with any file
+    2. fix read_students_csv function so that it can also work with any file
+    """
+
     students_csv = read_students_csv('students.csv')
-    #print(students_csv['records'])
 
     # transform raw student records (which are strings) into student dictionaries
     students = [make_student(record, students_csv['header']) for record in students_csv['records']]
-    #print students
 
-    print average_age(students)
+    print apply(normalize(extract(students, 'studentage'), float), mean, rmnone=True)
+
+    print apply(normalize(extract(students, 'studentheight'), float), sum, rmnone=True)
 
 
 if __name__ == '__main__':
