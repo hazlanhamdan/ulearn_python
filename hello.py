@@ -1,5 +1,7 @@
 import collections
+import csv
 import sys
+
 
 def read_students_csv(filename):
     try:
@@ -58,7 +60,8 @@ def mean(numbers):
     return sum(numbers) * 1.0 / len(numbers)
 
 def apply(li, funcname, rmnone=False):
-    return funcname(filter(lambda x: x is not None, li))
+    return funcname(filter(lambda x: x != '', li))
+
 
 def myfilter1(li, can_keep):
     newlist = []
@@ -108,23 +111,45 @@ def normalize_name(name):
     return name
 
 
+def read_csv(filename):
+    with file(filename) as f:
+        reader = csv.DictReader(f)
+        return list(reader)
+
+def write_csv(filename, data, fieldnames):
+    with file(filename, 'w') as f:
+        writer = csv.DictWriter(f, fieldnames)
+        writer.writeheader()
+        writer.writerows(data)
+
+
 def main():
-    """
-    1. fix make_student function so that it works with any file
-    2. fix read_students_csv function so that it can also work with any file
-    """
-
-    students_csv = read_students_csv('students.csv')
-
+    #students_csv = read_students_csv('students.csv')
     # transform raw student records (which are strings) into student dictionaries
-    students = [make_student(record, students_csv['header']) for record in students_csv['records']]
+    #students = [make_data2(record, students_csv['header']) for record in students_csv['records']]
+
+    students = read_csv('students.csv')
 
     print apply(normalize(extract(students, 'studentage'), float), mean, rmnone=True)
-
     print apply(normalize(extract(students, 'studentheight'), float), sum, rmnone=True)
-
     print apply(normalize(extract(students, 'studentname'), normalize_name), collections.Counter, rmnone=True)
 
 
 if __name__ == '__main__':
     main()
+
+
+
+# atharh@gmail.com
+def get_weather_data(location):
+    response = r.get("http://api.openweathermap.org/data/2.5/weather?q=" + location)
+    # once you get the json and json.loads it, then
+    # extract any fields you want and return them
+    # in a dict
+
+    return {
+        'lat': '',
+        'long': '',
+        'humidity': '',
+    }
+
