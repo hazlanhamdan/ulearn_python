@@ -114,7 +114,7 @@ def normalize_name(name):
 def read_csv(filename):
     with file(filename) as f:
         reader = csv.DictReader(f)
-        return list(reader)
+        return reader.fieldnames, list(reader)
 
 def write_csv(filename, data, fieldnames):
     with file(filename, 'w') as f:
@@ -123,12 +123,28 @@ def write_csv(filename, data, fieldnames):
         writer.writerows(data)
 
 
+class Student(object):
+    def __init__(self, name, age, height):
+        self.name = name
+        self.age = float(age)
+        self.height = int(height)
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return 'a student object'
+
+    def __len__(self):
+        return self.height
+
+
 def main():
     #students_csv = read_students_csv('students.csv')
     # transform raw student records (which are strings) into student dictionaries
     #students = [make_data2(record, students_csv['header']) for record in students_csv['records']]
 
-    students = read_csv('students.csv')
+    fieldnames, students = read_csv('students.csv')
 
     print apply(normalize(extract(students, 'studentage'), float), mean, rmnone=True)
     print apply(normalize(extract(students, 'studentheight'), float), sum, rmnone=True)
@@ -137,19 +153,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-# atharh@gmail.com
-def get_weather_data(location):
-    response = r.get("http://api.openweathermap.org/data/2.5/weather?q=" + location)
-    # once you get the json and json.loads it, then
-    # extract any fields you want and return them
-    # in a dict
-
-    return {
-        'lat': '',
-        'long': '',
-        'humidity': '',
-    }
 
